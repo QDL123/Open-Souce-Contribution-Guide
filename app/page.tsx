@@ -18,7 +18,7 @@ export default function Home() {
     if (state == "indexing") {
       const interval = setInterval(() => {
         fetchState();
-      }, 10000); // Poll every 10 seconds
+      }, 900000); // Poll every 10 seconds
 
       return () => clearInterval(interval); // Clear polling on component unmount
     }
@@ -48,6 +48,7 @@ export default function Home() {
   };
 
   const handleStartIndexing = async () => {
+    setState("indexing");
     try {
       const response = await fetch("/api/index", {
         method: "POST",
@@ -79,7 +80,7 @@ export default function Home() {
         <>
           <Input
             type="text"
-            placeholder="Paste your repository link here"
+            placeholder="Paste a Github repository in the format: owner/repo (ex: pandas-dev/pandas)"
             value={repoLink}
             onChange={(e) => setRepoLink(e.target.value)}
             className="w-1/2"

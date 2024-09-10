@@ -1,5 +1,7 @@
 import { readState, writeState } from '@/lib/state';
+import { indexRepository } from '@/lib/index_repo';;
 import { NextResponse } from 'next/server';
+
 
 export async function POST(request: Request) {
   try {
@@ -7,22 +9,31 @@ export async function POST(request: Request) {
     const { repoLink } = await request.json();
 
     if (!repoLink) {
-      return NextResponse.json({ error: 'Repository link is required' }, { status: 400 });
+      return NextResponse.json({ error: 'Repository is required' }, { status: 400 });
     }
 
+    // TODO: Move this business logic outside of the controller
     // Add your logic for processing the repository link here
     console.log('Repository link received:', repoLink);
+    
+    const { response } = await indexRepository(repoLink);
+
+    // Double check the response message
+    if (response != "started repo processing" && response != "repo already exists") {
+        throw new Error(`Failed to start indexing: ${response}`);
+    }
 
     // Set state to indexing
     const state = readState();
     console.log('Current state:', state);
     state['state'] = 'indexing';
+    state['repo'] = repoLink;
     console.log(`New state: ${state['state']}`);
     writeState(state);
 
     return NextResponse.json({ message: 'Indexing started successfully', state: state['state'] }, { status: 200 });
   } catch (error) {
-    console.log(error)
-    return NextResponse.json({ error: 'Failed to process the request' }, { status: 500 });
+    console.error(error);
+    return NextResponse.json({ error }, { status: 500 });
   }
 }

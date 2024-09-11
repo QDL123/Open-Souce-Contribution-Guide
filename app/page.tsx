@@ -18,7 +18,7 @@ export default function Home() {
     if (state == "indexing") {
       const interval = setInterval(() => {
         fetchState();
-      }, 900000); // Poll every 10 seconds
+      }, 10000); // Poll every 10 seconds
 
       return () => clearInterval(interval); // Clear polling on component unmount
     }
@@ -32,12 +32,7 @@ export default function Home() {
         setState(data.state);
 
         if (data.state === "indexed" && data.repo_background) {
-          console.log("State: indexed");
           setRepoBackground(data.repo_background);
-        } else if (data.state === "ready") {
-          console.log("State: ready");
-        } else if (data.state == "indexing") {
-          console.log("State: indexing");
         }
       } else {
         console.error("Failed to fetch state");
@@ -59,12 +54,8 @@ export default function Home() {
       });
 
       if (response.ok) {
-        // Handle success
         const res_json = await response.json();
-        const state = res_json.state;
-        console.log('State returned by start indexing:', state);
-        setState(state);
-        console.log("Indexing started successfully");
+        setState(res_json.state);
       } else {
         console.error("Failed to start indexing");
       }
@@ -74,36 +65,43 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center h-screen space-y-6">
-      <h1 className="text-4xl font-bold">Open Source Guide</h1>
-      {state === "ready" && (
-        <>
-          <Input
-            type="text"
-            placeholder="Paste a Github repository in the format: owner/repo (ex: pandas-dev/pandas)"
-            value={repoLink}
-            onChange={(e) => setRepoLink(e.target.value)}
-            className="w-1/2"
-          />
-          <Button onClick={handleStartIndexing} className="w-1/4">
-            Start Indexing
-          </Button>
-        </>
-      )}
+    <div className="flex flex-col items-center justify-start h-screen p-4">
+      {/* Title Section */}
+      <div className="mb-12">
+        <h1 className="text-4xl font-bold">Open Source Guide</h1>
+      </div>
 
-      {state === "indexing" && (
-        <div className="flex flex-col items-center space-y-4">
-          {/* You can use any loading spinner component or create a simple one */}
-          <div className="animate-spin h-10 w-10 border-t-4 border-blue-500 rounded-full"></div>
-          <p className="text-lg">Loading...</p>
-        </div>
-      )}
+      {/* Content Section */}
+      <div className="flex flex-col items-center justify-center space-y-6 w-full max-w-3xl">
+        {state === "ready" && (
+          <>
+            <Input
+              type="text"
+              placeholder="Paste a Github repository in the format: owner/repo (ex: pandas-dev/pandas)"
+              value={repoLink}
+              onChange={(e) => setRepoLink(e.target.value)}
+              className="w-full"
+            />
+            <Button onClick={handleStartIndexing} className="w-1/3">
+              Start Indexing
+            </Button>
+          </>
+        )}
 
-      {state === "indexed" && (
-        <Card>
-          <p>{repoBackground}</p>
-        </Card>
-      )}
+        {state === "indexing" && (
+          <div className="flex flex-col items-center space-y-4">
+            {/* Loading animation */}
+            <div className="animate-spin h-10 w-10 border-t-4 border-blue-500 rounded-full"></div>
+            <p className="text-lg">Indexing... Please wait.</p>
+          </div>
+        )}
+
+        {state === "indexed" && (
+          <Card className="w-full mx-auto p-6 text-left mt-10">
+            <pre className="whitespace-pre-wrap">{repoBackground}</pre>
+          </Card>
+        )}
+      </div>
     </div>
   );
 }

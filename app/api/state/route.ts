@@ -15,7 +15,7 @@ const intro_system_prompt = `
 
 function getUserPrompt(repo: string) {
     return `
-        Hello! I would like to contribute to ${repo}. Can you help me get started?
+        Hello! I would like to contribute to ${repo}.
     `;
 }
 
@@ -44,7 +44,7 @@ export async function GET(request: Request) {
               [system_prompt, user_prompt],
               [{ remote: 'github', branch: 'main', repository: repo }]
           );
-          console.log(`Got message: ${message}`);
+          // console.log(`Got message: ${message}`);
 
           state.repo_background = message;
           state['state'] = 'indexed';

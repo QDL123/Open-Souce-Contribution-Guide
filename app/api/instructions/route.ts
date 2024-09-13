@@ -33,11 +33,10 @@ export async function POST(request: Request) {
         const selectedIssue = topIssues.find(issue => issue.id == issueId);
         console.log("Got selected issue: ", selectedIssue);
 
-
         // Fetch instructions
         const prompt = getIssueInstructionsPrompt + JSON.stringify(selectedIssue, null, 2);
         const messages = [{ 'role': 'user', 'content': prompt }];
-        const repo_info = [{ remote: 'github', branch: 'main', repository: state['repo'] }]
+        const repo_info = [{ remote: 'github', branch: state['branch'], repository: state['repo'] }]
         console.log('Fetching issue instructions');
         const { message } = await queryRepo(messages, repo_info);
         // console.log(`Got issue instructions: ${message}`);

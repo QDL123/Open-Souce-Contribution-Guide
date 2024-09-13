@@ -9,7 +9,7 @@ export interface Message {
 
 export interface RepositoryReference {
   remote: string;
-  branch: string;
+  branch?: string;
   repository: string;
 }
 

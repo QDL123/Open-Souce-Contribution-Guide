@@ -2,6 +2,7 @@ import { readState, writeState } from '@/lib/state';
 import { queryRepo, Message } from '@/lib/query_repo'
 import { NextResponse } from 'next/server';
 import { getRepositoryInfo } from '@/lib/get_repo';
+import { getDefaultBranch } from '@/lib/get_default_branch';
 
 
 const intro_system_prompt = `
@@ -10,7 +11,8 @@ const intro_system_prompt = `
     The repository they want to contribute to has been included as part of this query. Assume the know the bare minimum about the
     project. Introduce the project and what it does, the basics about how the project is set up that they should know going in, and
     what the process will look like for creating a contribution keeping in mind the specific contribution policies of this particular
-    project. When you finish the introduction, ask if they are ready to find the first issue they want to work on.
+    project. When you finish the introduction, ask if they are ready to find the first issue they want to work on. Your response should
+    be in markdown format.
 `;
 
 function getUserPrompt(repo: string) {
@@ -30,7 +32,11 @@ export async function GET(request: Request) {
     if (state['state'] == 'indexing') {
         // Check if the indexing process has finished
         console.log("Checking repository status");
-        const repoId = `github:main:${repo}`;
+
+        // Fetch the default branch
+        const branch = await getDefaultBranch(repo);
+
+        const repoId = `github:${branch}:${repo}`;
         const { status } = await getRepositoryInfo(repoId);
         console.log(`Respository status: ${status}`);
 
@@ -42,7 +48,7 @@ export async function GET(request: Request) {
           console.log("Getting repo intro message from Greptile");
           const { message } = await queryRepo(
               [system_prompt, user_prompt],
-              [{ remote: 'github', branch: 'main', repository: repo }]
+              [{ remote: 'github', branch, repository: repo }]
           );
           // console.log(`Got message: ${message}`);
 

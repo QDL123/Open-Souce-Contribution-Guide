@@ -1,9 +1,11 @@
 "use client";
 import { useState, useEffect } from "react";
+import ReactMarkdown from 'react-markdown';
+import 'github-markdown-css/github-markdown.css';
+
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-// Assuming you have a Carousel component
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel"; // Adjust this import based on the actual ShadCN UI carousel
 
 export default function Home() {
@@ -118,7 +120,7 @@ export default function Home() {
     <div className="flex flex-col items-center justify-start h-screen p-4">
       {/* Title Section */}
       <div className="mb-12">
-        <h1 className="text-4xl font-bold">Open Source Guide</h1>
+        <h1 className="text-4xl font-bold">Open Source Contribution Guide</h1>
       </div>
 
       {/* Content Section */}
@@ -149,8 +151,8 @@ export default function Home() {
         {state === "indexed" && (
           <>
             {/* Ensure the card with instructions is shown */}
-            <Card className="w-full mx-auto p-6 text-left mt-10">
-              <pre className="whitespace-pre-wrap">{repoBackground}</pre>
+            <Card className="w-full mx-auto p-6 text-left mt-10 markdown-body">
+              <ReactMarkdown>{repoBackground}</ReactMarkdown>
             </Card>
 
             {/* Button to search for beginner issues */}
@@ -175,21 +177,23 @@ export default function Home() {
         {/* Show carousel when state is "selecting" */}
         {state === "selecting" && topIssues.length > 0 && !isLoadingIssues && (
           <div className="mt-10 w-full max-w-3xl">
-            <Card className="w-full mx-auto p-6 text-left mt-10">
-              <pre className="whitespace-pre-wrap">{repoBackground}</pre>
+            <Card className="w-full mx-auto p-6 text-left mt-10 markdown-body">
+              {/* <pre className="whitespace-pre-wrap">{repoBackground}</pre> */}
+              <ReactMarkdown>{repoBackground}</ReactMarkdown>
             </Card>
+            <h4 className="text-4xl font-bold text-center my-8">Beginner Github Issues</h4>
             <Carousel className="w-full overflow-hidden mt-10">
               <CarouselContent className="-ml-4">
                 {topIssues.map((issue) => (
-                  <CarouselItem key={issue.id} className="basis-full md:basis-1/2 lg:basis-1/3 pl-4">
-                    <Card className="p-6 mx-auto">
-                      <h2 className="text-xl font-bold">{issue.title} (#{issue.number})</h2>
-                      <p className="text-sm">{issue.body}</p>
-                      <p className="italic text-gray-600">Reason: {issue.reasoning}</p>
-
-                      {/* Add 'Select' Button at the bottom of each card */}
+                  <CarouselItem key={issue.id} className="basis-full basis-1/2 pl-4">
+                    <Card className="p-6 mx-auto markdown-body flex flex-col h-108"> {/* Full height is always used */}
+                      {/* Container for scrollable content */}
+                      <div className="flex-grow overflow-auto pr-2 mb-4"> {/* Scrollable area */}
+                        <ReactMarkdown>{issue.markdown}</ReactMarkdown>
+                      </div>
+                      {/* "Select" button fixed at the bottom */}
                       <Button
-                        className="mt-4 w-full"
+                        className="mt-auto w-full flex-none"
                         onClick={() => handleSelectIssue(issue.id)}
                       >
                         Select
@@ -216,8 +220,8 @@ export default function Home() {
 
         {/* Show issue instructions when state is "done" */}
         {state === "done" && issueInstructions && (
-          <Card className="w-full mx-auto p-6 text-left mt-10">
-            <pre className="whitespace-pre-wrap">{issueInstructions}</pre>
+          <Card className="w-full mx-auto p-6 text-left mt-10 markdown-body">
+            <ReactMarkdown>{issueInstructions}</ReactMarkdown>
           </Card>
         )}
       </div>

@@ -1,5 +1,6 @@
 import { readState, writeState } from '@/lib/state';
 import { indexRepository } from '@/lib/index_repo';;
+import { getDefaultBranch } from '@/lib/get_default_branch';
 import { NextResponse } from 'next/server';
 
 
@@ -17,7 +18,9 @@ export async function POST(request: Request) {
     console.log('Repository link received:', repoLink);
     
     const { response } = await indexRepository(repoLink);
+    const branch = await getDefaultBranch(repoLink);
 
+    console.log('Indexing response:', response);
     // Double check the response message
     if (response != "started repo processing" && response != "repo already exists") {
         throw new Error(`Failed to start indexing: ${response}`);
@@ -28,6 +31,7 @@ export async function POST(request: Request) {
     console.log('Current state:', state);
     state['state'] = 'indexing';
     state['repo'] = repoLink;
+    state['branch'] = branch;
     console.log(`New state: ${state['state']}`);
     writeState(state);
 

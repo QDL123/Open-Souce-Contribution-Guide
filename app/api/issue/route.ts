@@ -16,10 +16,7 @@ const selectIssuePrompt = `
     [
         {
             "id": <id of the issue>,
-            "title": "<title of the issue>",
-            "number": "<issue number>",
-            "body": "<body of the issue>",
-            "reasoning": <provide your reasoning for selecting this issue>,
+            "markdown": "<issue name, number body, reason it's a good choice, etc. in markdown format>",
         },
         ...
     ]
@@ -40,7 +37,6 @@ export async function GET(request: Request) {
 
         // Fetch issues with the good first issue label
         const firstIssueLabel = 'good first issue';
-
         // Get 20 issues with the good first issue label
         console.log("Fetching issues");
         const issues = await getIssues(state['repo'], firstIssueLabel, 20);
@@ -48,7 +44,7 @@ export async function GET(request: Request) {
         // Ask Greptile which are the best issues for beginners
         const prompt = selectIssuePrompt + JSON.stringify(issues, null, 2);
         const messages = [{ 'role': 'user', 'content': prompt }];
-        const repo_info = [{ remote: 'github', branch: 'main', repository: state['repo'] }]
+        const repo_info = [{ remote: 'github', branch: state['branch'], repository: state['repo'] }]
         console.log("Fetching Greptile analysis")
         const { message } = await queryRepo(messages, repo_info);
         console.log(`got greptile response: ${message}`);

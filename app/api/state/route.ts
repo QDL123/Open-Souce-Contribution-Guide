@@ -1,8 +1,7 @@
-import { readState, writeState } from '@/lib/state';
-import { queryRepo, Message } from '@/lib/query_repo'
 import { NextResponse } from 'next/server';
-import { getRepositoryInfo } from '@/lib/get_repo';
-import { getDefaultBranch } from '@/lib/get_default_branch';
+import { readState, writeState } from '@/lib/state';
+import { getRepositoryInfo, queryRepo, Message } from '@/lib/greptile';
+import { getDefaultBranch } from '@/lib/github';
 
 
 const intro_system_prompt = `

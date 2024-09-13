@@ -1,7 +1,7 @@
-import { readState, writeState } from '@/lib/state';
 import { NextResponse } from 'next/server';
-import { Issue } from '@/lib/get_issues';
-import { queryRepo } from '@/lib/query_repo';
+import { readState, writeState } from '@/lib/state';
+import { Issue } from '@/lib/github';
+import { queryRepo } from '@/lib/greptile';
 
 const getIssueInstructionsPrompt = `
     Below are the details on a Github issue that's been selected by a first time contributor. You job is to guide and

@@ -17,7 +17,7 @@ Before you can run the project, you will need a Greptile API key and a Github AP
 - [Generate Github API Key](here)
 
 Once you have your API keys, follow these steps:
-1. Clone the repository: `git clone <insert repository here>`
+1. Clone the repository: `git clone https://github.com/QDL123/Open-Souce-Contribution-Guide`
 2. In the root of the repository, create a `.env.local` file and paste in your API keys in the following format:
 ```
 GITHUB_TOKEN=<Your-Github-API-Key-Here>
@@ -29,4 +29,5 @@ GREPTILE_API_KEY=<Your-Greptile-API-Key-Here>
 
 You're ready to go!
 
-
+## Credits
+The project is powered by Greptile and Github's APIs. It was made with the help of ChatGPT-4o and Github co-pilot.

@@ -1,8 +1,7 @@
 import { readState, writeState } from '@/lib/state';
-import { getIssues } from '@/lib/get_issues';
-import { queryRepo } from '@/lib/query_repo';
+import { getIssues } from '@/lib/github';
+import { queryRepo } from '@/lib/greptile';
 import { NextResponse } from 'next/server';
-import { write } from 'fs';
 
 const selectIssuePrompt = `
     Can you take a look at the following github issues, which have been marked as good first
